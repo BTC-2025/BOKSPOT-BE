@@ -6,19 +6,16 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.NotificationsModule = void 0;
+exports.TicketsModule = void 0;
 const common_1 = require("@nestjs/common");
-const bullmq_1 = require("@nestjs/bullmq");
-const notifications_controller_1 = require("./notifications.controller");
-const notifications_service_1 = require("./notifications.service");
-let NotificationsModule = class NotificationsModule {
+const tickets_controller_1 = require("./tickets.controller");
+const tickets_service_1 = require("./tickets.service");
+let TicketsModule = class TicketsModule {
 };
-exports.NotificationsModule = NotificationsModule;
-exports.NotificationsModule = NotificationsModule = __decorate([
+exports.TicketsModule = TicketsModule;
+exports.TicketsModule = TicketsModule = __decorate([
     (0, common_1.Module)({
-        imports: [bullmq_1.BullModule.registerQueue({ name: 'notification-queue' })],
-        controllers: [notifications_controller_1.NotificationsController],
-        providers: [notifications_service_1.NotificationsService],
-        exports: [notifications_service_1.NotificationsService],
+        controllers: [tickets_controller_1.TicketsController],
+        providers: [tickets_service_1.TicketsService],
     })
-], NotificationsModule);
+], TicketsModule);

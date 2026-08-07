@@ -28,6 +28,7 @@ import { GeolocationModule } from './modules/geolocation/geolocation.module';
 import { WebsocketModule } from './modules/websocket/websocket.module';
 
 import { BookingTypesModule } from './modules/booking-types/booking-types.module';
+import { TicketsModule } from './modules/tickets/tickets.module';
 
 @Module({
   imports: [
@@ -76,6 +77,7 @@ import { BookingTypesModule } from './modules/booking-types/booking-types.module
     GeolocationModule,
     WebsocketModule,
     BookingTypesModule,
+    TicketsModule,
   ],
 })
 export class AppModule {}

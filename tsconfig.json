@@ -8,7 +8,12 @@
     "paths": {
       "@/*": ["src/*"],
       "@shared/*": ["../shared/src/*"]
-    }
+    },
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "strictPropertyInitialization": false,
+    "target": "ES2021",
+    "esModuleInterop": true
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist", "test"]

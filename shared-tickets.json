@@ -1,0 +1,20 @@
+[
+  {
+    "merchantId": "mer-100",
+    "merchantName": "Grand Hotel",
+    "subject": "load",
+    "message": "loding..",
+    "targetType": "ADMIN",
+    "id": "TKT-M0B26K",
+    "status": "OPEN",
+    "createdAt": "2026-08-07T12:04:02.914Z"
+  },
+  {
+    "targetType": "ADMIN",
+    "subject": "www prb",
+    "message": "server prm",
+    "id": "TKT-DRQFZ7",
+    "status": "OPEN",
+    "createdAt": "2026-08-07T11:55:59.404Z"
+  }
+]

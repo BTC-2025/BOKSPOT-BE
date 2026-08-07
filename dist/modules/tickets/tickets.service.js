@@ -1,7 +1,4 @@
 "use strict";
-// ============================================================
-// JWT Auth Guard — Validates tokens from external auth service
-// ============================================================
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     var desc = Object.getOwnPropertyDescriptor(m, k);
@@ -41,55 +38,64 @@ var __importStar = (this && this.__importStar) || (function () {
         return result;
     };
 })();
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-var JwtAuthGuard_1;
+var TicketsService_1;
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.JwtAuthGuard = void 0;
+exports.TicketsService = void 0;
 const common_1 = require("@nestjs/common");
-const config_1 = require("@nestjs/config");
-const core_1 = require("@nestjs/core");
-const jwt = __importStar(require("jsonwebtoken"));
-const public_decorator_1 = require("../decorators/public.decorator");
-let JwtAuthGuard = JwtAuthGuard_1 = class JwtAuthGuard {
-    constructor(configService, reflector) {
-        this.configService = configService;
-        this.reflector = reflector;
-        this.logger = new common_1.Logger(JwtAuthGuard_1.name);
+const fs = __importStar(require("fs"));
+const path = __importStar(require("path"));
+let TicketsService = TicketsService_1 = class TicketsService {
+    constructor() {
+        this.logger = new common_1.Logger(TicketsService_1.name);
+        this.filePath = path.resolve(process.cwd(), 'shared-tickets.json');
     }
-    async canActivate(context) {
-        // Check if route is marked as public
-        const isPublic = this.reflector.getAllAndOverride(public_decorator_1.IS_PUBLIC_KEY, [
-            context.getHandler(),
-            context.getClass(),
-        ]);
-        if (isPublic)
-            return true;
-        const request = context.switchToHttp().getRequest();
-        const token = this.extractTokenFromHeader(request);
-        if (!token) {
-            throw new common_1.UnauthorizedException('Missing authorization token');
-        }
+    readTickets() {
         try {
-            const secret = this.configService.get('JWT_SECRET', '');
-            const payload = jwt.verify(token, secret);
-            request.user = payload;
-            return true;
+            if (fs.existsSync(this.filePath)) {
+                const data = fs.readFileSync(this.filePath, 'utf8');
+                return JSON.parse(data) || [];
+            }
         }
         catch (error) {
-            this.logger.warn(`Invalid token: ${error.message}`);
-            throw new common_1.UnauthorizedException('Invalid or expired token');
+            this.logger.error('Error reading shared-tickets.json', error);
+        }
+        return [];
+    }
+    writeTickets(tickets) {
+        try {
+            fs.writeFileSync(this.filePath, JSON.stringify(tickets, null, 2), 'utf8');
+        }
+        catch (error) {
+            this.logger.error('Error writing to shared-tickets.json', error);
         }
     }
-    extractTokenFromHeader(request) {
-        const [type, token] = request.headers.authorization?.split(' ') ?? [];
-        return type === 'Bearer' ? token : null;
+    findAll() {
+        return this.readTickets();
+    }
+    create(ticketData) {
+        const tickets = this.readTickets();
+        const newTicket = {
+            ...ticketData,
+            id: 'TKT-' + Math.random().toString(36).substring(2, 8).toUpperCase(),
+            status: 'OPEN',
+            createdAt: new Date().toISOString(),
+        };
+        // Add to top of list
+        tickets.unshift(newTicket);
+        this.writeTickets(tickets);
+        return newTicket;
+    }
+    updateStatus(id, status) {
+        const tickets = this.readTickets();
+        const index = tickets.findIndex(t => t.id === id);
+        if (index === -1)
+            return null;
+        tickets[index].status = status;
+        this.writeTickets(tickets);
+        return tickets[index];
     }
 };
-exports.JwtAuthGuard = JwtAuthGuard;
-exports.JwtAuthGuard = JwtAuthGuard = JwtAuthGuard_1 = __decorate([
-    (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [config_1.ConfigService,
-        core_1.Reflector])
-], JwtAuthGuard);
+exports.TicketsService = TicketsService;
+exports.TicketsService = TicketsService = TicketsService_1 = __decorate([
+    (0, common_1.Injectable)()
+], TicketsService);

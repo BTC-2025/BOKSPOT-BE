@@ -2,124 +2,104 @@
 // ============================================================
 // WebSocket Gateway — Real-time booking & dashboard updates
 // ============================================================
-var __runInitializers = (this && this.__runInitializers) || function (thisArg, initializers, value) {
-    var useValue = arguments.length > 2;
-    for (var i = 0; i < initializers.length; i++) {
-        value = useValue ? initializers[i].call(thisArg, value) : initializers[i].call(thisArg);
-    }
-    return useValue ? value : void 0;
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __esDecorate = (this && this.__esDecorate) || function (ctor, descriptorIn, decorators, contextIn, initializers, extraInitializers) {
-    function accept(f) { if (f !== void 0 && typeof f !== "function") throw new TypeError("Function expected"); return f; }
-    var kind = contextIn.kind, key = kind === "getter" ? "get" : kind === "setter" ? "set" : "value";
-    var target = !descriptorIn && ctor ? contextIn["static"] ? ctor : ctor.prototype : null;
-    var descriptor = descriptorIn || (target ? Object.getOwnPropertyDescriptor(target, contextIn.name) : {});
-    var _, done = false;
-    for (var i = decorators.length - 1; i >= 0; i--) {
-        var context = {};
-        for (var p in contextIn) context[p] = p === "access" ? {} : contextIn[p];
-        for (var p in contextIn.access) context.access[p] = contextIn.access[p];
-        context.addInitializer = function (f) { if (done) throw new TypeError("Cannot add initializers after decoration has completed"); extraInitializers.push(accept(f || null)); };
-        var result = (0, decorators[i])(kind === "accessor" ? { get: descriptor.get, set: descriptor.set } : descriptor[key], context);
-        if (kind === "accessor") {
-            if (result === void 0) continue;
-            if (result === null || typeof result !== "object") throw new TypeError("Object expected");
-            if (_ = accept(result.get)) descriptor.get = _;
-            if (_ = accept(result.set)) descriptor.set = _;
-            if (_ = accept(result.init)) initializers.unshift(_);
-        }
-        else if (_ = accept(result)) {
-            if (kind === "field") initializers.unshift(_);
-            else descriptor[key] = _;
-        }
-    }
-    if (target) Object.defineProperty(target, contextIn.name, descriptor);
-    done = true;
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var __setFunctionName = (this && this.__setFunctionName) || function (f, name, prefix) {
-    if (typeof name === "symbol") name = name.description ? "[".concat(name.description, "]") : "";
-    return Object.defineProperty(f, "name", { configurable: true, value: prefix ? "".concat(prefix, " ", name) : name });
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
 };
+var BookingGateway_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BookingGateway = void 0;
-var websockets_1 = require("@nestjs/websockets");
-var common_1 = require("@nestjs/common");
-var BookingGateway = function () {
-    var _classDecorators = [(0, websockets_1.WebSocketGateway)({
-            cors: { origin: '*', credentials: true },
-            namespace: '/ws',
-        })];
-    var _classDescriptor;
-    var _classExtraInitializers = [];
-    var _classThis;
-    var _instanceExtraInitializers = [];
-    var _server_decorators;
-    var _server_initializers = [];
-    var _server_extraInitializers = [];
-    var _handleJoinServiceRoom_decorators;
-    var _handleLeaveServiceRoom_decorators;
-    var _handleJoinMerchantRoom_decorators;
-    var _handleLeaveMerchantRoom_decorators;
-    var BookingGateway = _classThis = /** @class */ (function () {
-        function BookingGateway_1() {
-            this.server = (__runInitializers(this, _instanceExtraInitializers), __runInitializers(this, _server_initializers, void 0));
-            this.logger = (__runInitializers(this, _server_extraInitializers), new common_1.Logger(BookingGateway.name));
-        }
-        BookingGateway_1.prototype.handleConnection = function (client) {
-            this.logger.log("Client connected: ".concat(client.id));
-        };
-        BookingGateway_1.prototype.handleDisconnect = function (client) {
-            this.logger.log("Client disconnected: ".concat(client.id));
-        };
-        BookingGateway_1.prototype.handleJoinServiceRoom = function (client, serviceId) {
-            client.join("service:".concat(serviceId));
-            this.logger.debug("".concat(client.id, " joined service:").concat(serviceId));
-        };
-        BookingGateway_1.prototype.handleLeaveServiceRoom = function (client, serviceId) {
-            client.leave("service:".concat(serviceId));
-        };
-        BookingGateway_1.prototype.handleJoinMerchantRoom = function (client, merchantId) {
-            client.join("merchant:".concat(merchantId));
-        };
-        BookingGateway_1.prototype.handleLeaveMerchantRoom = function (client, merchantId) {
-            client.leave("merchant:".concat(merchantId));
-        };
-        // Emit methods for other services to use
-        BookingGateway_1.prototype.emitSlotUpdate = function (serviceId, data) {
-            this.server.to("service:".concat(serviceId)).emit('slot:updated', data);
-        };
-        BookingGateway_1.prototype.emitBookingCreated = function (merchantId, data) {
-            this.server.to("merchant:".concat(merchantId)).emit('booking:created', data);
-        };
-        BookingGateway_1.prototype.emitBookingConfirmed = function (merchantId, data) {
-            this.server.to("merchant:".concat(merchantId)).emit('booking:confirmed', data);
-        };
-        BookingGateway_1.prototype.emitDashboardUpdate = function (merchantId, data) {
-            this.server.to("merchant:".concat(merchantId)).emit('dashboard:update', data);
-        };
-        BookingGateway_1.prototype.emitNotification = function (userId, data) {
-            this.server.to("user:".concat(userId)).emit('notification:new', data);
-        };
-        return BookingGateway_1;
-    }());
-    __setFunctionName(_classThis, "BookingGateway");
-    (function () {
-        var _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create(null) : void 0;
-        _server_decorators = [(0, websockets_1.WebSocketServer)()];
-        _handleJoinServiceRoom_decorators = [(0, websockets_1.SubscribeMessage)('join:serviceRoom')];
-        _handleLeaveServiceRoom_decorators = [(0, websockets_1.SubscribeMessage)('leave:serviceRoom')];
-        _handleJoinMerchantRoom_decorators = [(0, websockets_1.SubscribeMessage)('join:merchantRoom')];
-        _handleLeaveMerchantRoom_decorators = [(0, websockets_1.SubscribeMessage)('leave:merchantRoom')];
-        __esDecorate(_classThis, null, _handleJoinServiceRoom_decorators, { kind: "method", name: "handleJoinServiceRoom", static: false, private: false, access: { has: function (obj) { return "handleJoinServiceRoom" in obj; }, get: function (obj) { return obj.handleJoinServiceRoom; } }, metadata: _metadata }, null, _instanceExtraInitializers);
-        __esDecorate(_classThis, null, _handleLeaveServiceRoom_decorators, { kind: "method", name: "handleLeaveServiceRoom", static: false, private: false, access: { has: function (obj) { return "handleLeaveServiceRoom" in obj; }, get: function (obj) { return obj.handleLeaveServiceRoom; } }, metadata: _metadata }, null, _instanceExtraInitializers);
-        __esDecorate(_classThis, null, _handleJoinMerchantRoom_decorators, { kind: "method", name: "handleJoinMerchantRoom", static: false, private: false, access: { has: function (obj) { return "handleJoinMerchantRoom" in obj; }, get: function (obj) { return obj.handleJoinMerchantRoom; } }, metadata: _metadata }, null, _instanceExtraInitializers);
-        __esDecorate(_classThis, null, _handleLeaveMerchantRoom_decorators, { kind: "method", name: "handleLeaveMerchantRoom", static: false, private: false, access: { has: function (obj) { return "handleLeaveMerchantRoom" in obj; }, get: function (obj) { return obj.handleLeaveMerchantRoom; } }, metadata: _metadata }, null, _instanceExtraInitializers);
-        __esDecorate(null, null, _server_decorators, { kind: "field", name: "server", static: false, private: false, access: { has: function (obj) { return "server" in obj; }, get: function (obj) { return obj.server; }, set: function (obj, value) { obj.server = value; } }, metadata: _metadata }, _server_initializers, _server_extraInitializers);
-        __esDecorate(null, _classDescriptor = { value: _classThis }, _classDecorators, { kind: "class", name: _classThis.name, metadata: _metadata }, null, _classExtraInitializers);
-        BookingGateway = _classThis = _classDescriptor.value;
-        if (_metadata) Object.defineProperty(_classThis, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
-        __runInitializers(_classThis, _classExtraInitializers);
-    })();
-    return BookingGateway = _classThis;
-}();
+const websockets_1 = require("@nestjs/websockets");
+const common_1 = require("@nestjs/common");
+const socket_io_1 = require("socket.io");
+let BookingGateway = BookingGateway_1 = class BookingGateway {
+    constructor() {
+        this.logger = new common_1.Logger(BookingGateway_1.name);
+    }
+    handleConnection(client) {
+        this.logger.log(`Client connected: ${client.id}`);
+    }
+    handleDisconnect(client) {
+        this.logger.log(`Client disconnected: ${client.id}`);
+    }
+    handleJoinServiceRoom(client, serviceId) {
+        client.join(`service:${serviceId}`);
+        this.logger.debug(`${client.id} joined service:${serviceId}`);
+    }
+    handleLeaveServiceRoom(client, serviceId) {
+        client.leave(`service:${serviceId}`);
+    }
+    handleJoinMerchantRoom(client, merchantId) {
+        client.join(`merchant:${merchantId}`);
+    }
+    handleLeaveMerchantRoom(client, merchantId) {
+        client.leave(`merchant:${merchantId}`);
+    }
+    // Emit methods for other services to use
+    emitSlotUpdate(serviceId, data) {
+        this.server.to(`service:${serviceId}`).emit('slot:updated', data);
+    }
+    emitBookingCreated(merchantId, data) {
+        this.server.to(`merchant:${merchantId}`).emit('booking:created', data);
+    }
+    emitBookingConfirmed(merchantId, data) {
+        this.server.to(`merchant:${merchantId}`).emit('booking:confirmed', data);
+    }
+    emitDashboardUpdate(merchantId, data) {
+        this.server.to(`merchant:${merchantId}`).emit('dashboard:update', data);
+    }
+    emitNotification(userId, data) {
+        this.server.to(`user:${userId}`).emit('notification:new', data);
+    }
+};
 exports.BookingGateway = BookingGateway;
+__decorate([
+    (0, websockets_1.WebSocketServer)(),
+    __metadata("design:type", socket_io_1.Server)
+], BookingGateway.prototype, "server", void 0);
+__decorate([
+    (0, websockets_1.SubscribeMessage)('join:serviceRoom'),
+    __param(0, (0, websockets_1.ConnectedSocket)()),
+    __param(1, (0, websockets_1.MessageBody)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [socket_io_1.Socket, String]),
+    __metadata("design:returntype", void 0)
+], BookingGateway.prototype, "handleJoinServiceRoom", null);
+__decorate([
+    (0, websockets_1.SubscribeMessage)('leave:serviceRoom'),
+    __param(0, (0, websockets_1.ConnectedSocket)()),
+    __param(1, (0, websockets_1.MessageBody)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [socket_io_1.Socket, String]),
+    __metadata("design:returntype", void 0)
+], BookingGateway.prototype, "handleLeaveServiceRoom", null);
+__decorate([
+    (0, websockets_1.SubscribeMessage)('join:merchantRoom'),
+    __param(0, (0, websockets_1.ConnectedSocket)()),
+    __param(1, (0, websockets_1.MessageBody)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [socket_io_1.Socket, String]),
+    __metadata("design:returntype", void 0)
+], BookingGateway.prototype, "handleJoinMerchantRoom", null);
+__decorate([
+    (0, websockets_1.SubscribeMessage)('leave:merchantRoom'),
+    __param(0, (0, websockets_1.ConnectedSocket)()),
+    __param(1, (0, websockets_1.MessageBody)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [socket_io_1.Socket, String]),
+    __metadata("design:returntype", void 0)
+], BookingGateway.prototype, "handleLeaveMerchantRoom", null);
+exports.BookingGateway = BookingGateway = BookingGateway_1 = __decorate([
+    (0, websockets_1.WebSocketGateway)({
+        cors: { origin: '*', credentials: true },
+        namespace: '/ws',
+    })
+], BookingGateway);

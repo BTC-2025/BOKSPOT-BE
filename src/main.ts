@@ -20,8 +20,8 @@ async function bootstrap() {
   });
 
   const configService = app.get(ConfigService);
-  const port = configService.get<number>('PORT', 9000);
-  const corsOrigins = configService.get<string>('CORS_ORIGINS', 'http://localhost:4000,http://localhost:4001');
+  const port = configService.get<number>('PORT', 4000);
+  const corsOrigins = configService.get<string>('CORS_ORIGINS', 'http://localhost:3000,http://localhost:3001,http://localhost:4000,http://localhost:4001');
 
   // Security
   app.use(helmet());
@@ -96,3 +96,4 @@ async function bootstrap() {
 }
 
 bootstrap();
+// Trigger restart 4
