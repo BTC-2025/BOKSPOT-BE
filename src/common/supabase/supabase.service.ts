@@ -12,14 +12,17 @@ export class SupabaseService {
   public readonly client: SupabaseClient;
 
   constructor(private configService: ConfigService) {
-    const supabaseUrl = this.configService.get<string>('SUPABASE_URL', '');
-    const supabaseKey = this.configService.get<string>('SUPABASE_SERVICE_ROLE_KEY', '');
+    const supabaseUrl = this.configService.get<string>('SUPABASE_URL') || 'https://fallback.supabase.co';
+    const supabaseKey = this.configService.get<string>('SUPABASE_SERVICE_ROLE_KEY') || 'fallback-key';
 
-    this.client = createClient(supabaseUrl, supabaseKey, {
-      auth: { autoRefreshToken: false, persistSession: false },
-    });
-
-    this.logger.log('Supabase client initialized');
+    try {
+      this.client = createClient(supabaseUrl, supabaseKey, {
+        auth: { autoRefreshToken: false, persistSession: false },
+      });
+      this.logger.log('Supabase client initialized');
+    } catch (e) {
+      this.logger.error('Failed to initialize Supabase Client', e);
+    }
   }
 
   // ---- Storage ----

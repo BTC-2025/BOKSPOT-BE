@@ -21,12 +21,17 @@ let SupabaseService = SupabaseService_1 = class SupabaseService {
     constructor(configService) {
         this.configService = configService;
         this.logger = new common_1.Logger(SupabaseService_1.name);
-        const supabaseUrl = this.configService.get('SUPABASE_URL', '');
-        const supabaseKey = this.configService.get('SUPABASE_SERVICE_ROLE_KEY', '');
-        this.client = (0, supabase_js_1.createClient)(supabaseUrl, supabaseKey, {
-            auth: { autoRefreshToken: false, persistSession: false },
-        });
-        this.logger.log('Supabase client initialized');
+        const supabaseUrl = this.configService.get('SUPABASE_URL') || 'https://fallback.supabase.co';
+        const supabaseKey = this.configService.get('SUPABASE_SERVICE_ROLE_KEY') || 'fallback-key';
+        try {
+            this.client = (0, supabase_js_1.createClient)(supabaseUrl, supabaseKey, {
+                auth: { autoRefreshToken: false, persistSession: false },
+            });
+            this.logger.log('Supabase client initialized');
+        }
+        catch (e) {
+            this.logger.error('Failed to initialize Supabase Client', e);
+        }
     }
     // ---- Storage ----
     async uploadFile(bucket, path, file, contentType) {
