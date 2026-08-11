@@ -58,10 +58,17 @@ let RazorpayProvider = RazorpayProvider_1 = class RazorpayProvider {
     constructor(configService) {
         this.configService = configService;
         this.logger = new common_1.Logger(RazorpayProvider_1.name);
-        this.client = new razorpay_1.default({
-            key_id: this.configService.get('RAZORPAY_KEY_ID', ''),
-            key_secret: this.configService.get('RAZORPAY_KEY_SECRET', ''),
-        });
+        const keyId = this.configService.get('RAZORPAY_KEY_ID') || 'fallback_key_id';
+        const keySecret = this.configService.get('RAZORPAY_KEY_SECRET') || 'fallback_key_secret';
+        try {
+            this.client = new razorpay_1.default({
+                key_id: keyId,
+                key_secret: keySecret,
+            });
+        }
+        catch (e) {
+            this.logger.error('Failed to initialize Razorpay Client', e);
+        }
         this.webhookSecret = this.configService.get('RAZORPAY_WEBHOOK_SECRET', '');
     }
     async createOrder(amount, currency, bookingId) {

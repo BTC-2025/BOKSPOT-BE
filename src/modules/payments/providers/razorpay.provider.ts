@@ -14,10 +14,17 @@ export class RazorpayProvider {
   private webhookSecret: string;
 
   constructor(private configService: ConfigService) {
-    this.client = new Razorpay({
-      key_id: this.configService.get<string>('RAZORPAY_KEY_ID', ''),
-      key_secret: this.configService.get<string>('RAZORPAY_KEY_SECRET', ''),
-    });
+    const keyId = this.configService.get<string>('RAZORPAY_KEY_ID') || 'fallback_key_id';
+    const keySecret = this.configService.get<string>('RAZORPAY_KEY_SECRET') || 'fallback_key_secret';
+
+    try {
+      this.client = new Razorpay({
+        key_id: keyId,
+        key_secret: keySecret,
+      });
+    } catch (e) {
+      this.logger.error('Failed to initialize Razorpay Client', e);
+    }
     this.webhookSecret = this.configService.get<string>('RAZORPAY_WEBHOOK_SECRET', '');
   }
 
