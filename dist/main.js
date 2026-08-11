@@ -24,7 +24,7 @@ async function bootstrap() {
     });
     const configService = app.get(config_1.ConfigService);
     const port = configService.get('PORT', 4000);
-    const corsOrigins = configService.get('CORS_ORIGINS', 'http://localhost:3000,http://localhost:3001,http://localhost:4000,http://localhost:4001');
+    const corsOrigins = configService.get('CORS_ORIGINS', 'http://localhost:3000,http://localhost:3001,http://localhost:4000,http://localhost:4001,https://bokspot-fe.vercel.app,https://bokspot-bus-fe.vercel.app');
     // Security
     app.use((0, helmet_1.default)());
     app.use((0, compression_1.default)());
