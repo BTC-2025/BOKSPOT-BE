@@ -14,4 +14,20 @@ export class CreateServiceDto {
   @ApiPropertyOptional({ default: 1 }) @IsOptional() @IsInt() @Min(1) @Max(1000) maxCapacity?: number;
   @ApiPropertyOptional() @IsOptional() @IsArray() @IsString({ each: true }) images?: string[];
   @ApiPropertyOptional() @IsOptional() @IsArray() @IsString({ each: true }) tags?: string[];
+
+  // Dynamic fields
+  @ApiPropertyOptional() @IsOptional() isTimingEnabled?: boolean;
+  @ApiPropertyOptional() @IsOptional() @IsString() timingDetails?: string;
+  @ApiPropertyOptional() @IsOptional() isCapacityEnabled?: boolean;
+  @ApiPropertyOptional() @IsOptional() @IsInt() participantCapacity?: number;
+  @ApiPropertyOptional() @IsOptional() isAddonsEnabled?: boolean;
+  @ApiPropertyOptional() @IsOptional() addOns?: any;
+  @ApiPropertyOptional() @IsOptional() isTipsEnabled?: boolean;
+  @ApiPropertyOptional() @IsOptional() @IsString() tipsAndGuidelines?: string;
+  @ApiPropertyOptional() @IsOptional() isRestrictionsEnabled?: boolean;
+  @ApiPropertyOptional() @IsOptional() @IsString() restrictions?: string;
+  @ApiPropertyOptional() @IsOptional() isOffersEnabled?: boolean;
+  @ApiPropertyOptional() @IsOptional() @IsString() offersAndDiscounts?: string;
+  @ApiPropertyOptional() @IsOptional() isInstructionsEnabled?: boolean;
+  @ApiPropertyOptional() @IsOptional() @IsString() specialInstructions?: string;
 }

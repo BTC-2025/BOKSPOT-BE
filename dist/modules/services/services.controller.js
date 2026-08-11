@@ -49,6 +49,7 @@ let ServicesController = class ServicesController {
 exports.ServicesController = ServicesController;
 __decorate([
     (0, common_1.Post)(':merchantId'),
+    (0, public_decorator_1.Public)(),
     (0, swagger_1.ApiBearerAuth)(),
     (0, swagger_1.ApiOperation)({ summary: 'Create a service for a merchant' }),
     __param(0, (0, common_1.Param)('merchantId')),
@@ -106,8 +107,9 @@ __decorate([
 ], ServicesController.prototype, "findById", null);
 __decorate([
     (0, common_1.Patch)(':id'),
+    (0, public_decorator_1.Public)(),
     (0, swagger_1.ApiBearerAuth)(),
-    (0, swagger_1.ApiOperation)({ summary: 'Update service' }),
+    (0, swagger_1.ApiOperation)({ summary: 'Update a service' }),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -116,8 +118,9 @@ __decorate([
 ], ServicesController.prototype, "update", null);
 __decorate([
     (0, common_1.Delete)(':id'),
+    (0, public_decorator_1.Public)(),
     (0, swagger_1.ApiBearerAuth)(),
-    (0, swagger_1.ApiOperation)({ summary: 'Soft delete service' }),
+    (0, swagger_1.ApiOperation)({ summary: 'Delete a service' }),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),

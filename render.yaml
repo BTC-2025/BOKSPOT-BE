@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: bokspot-be
+    env: node
+    buildCommand: npm install && npm run build
+    startCommand: npm run start:prod
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: CORS_ORIGINS
+        value: https://bokspot-fe.vercel.app,https://bokspot-bus-fe.vercel.app
+      # DATABASE_URL will be provided in the Render Dashboard securely

@@ -15,6 +15,7 @@ export class ServicesController {
   constructor(private servicesService: ServicesService) {}
 
   @Post(':merchantId')
+  @Public()
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create a service for a merchant' })
   async create(
@@ -67,15 +68,17 @@ export class ServicesController {
   }
 
   @Patch(':id')
+  @Public()
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Update service' })
+  @ApiOperation({ summary: 'Update a service' })
   async update(@Param('id') id: string, @Body() dto: UpdateServiceDto) {
     return this.servicesService.update(id, dto);
   }
 
   @Delete(':id')
+  @Public()
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Soft delete service' })
+  @ApiOperation({ summary: 'Delete a service' })
   async delete(@Param('id') id: string) {
     return this.servicesService.softDelete(id);
   }

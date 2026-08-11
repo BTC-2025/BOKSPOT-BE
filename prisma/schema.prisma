@@ -221,6 +221,28 @@ model Service {
   isFeatured       Boolean     @default(false) @map("is_featured")
   metadata         Json?       // flexible extra data per service type
 
+  // Custom Listing Fields (Dynamic Configuration)
+  isTimingEnabled       Boolean  @default(false) @map("is_timing_enabled")
+  timingDetails         String?  @map("timing_details") @db.Text
+  
+  isCapacityEnabled     Boolean  @default(false) @map("is_capacity_enabled")
+  participantCapacity   Int?     @map("participant_capacity")
+  
+  isAddonsEnabled       Boolean  @default(false) @map("is_addons_enabled")
+  addOns                Json?    @map("add_ons")
+  
+  isTipsEnabled         Boolean  @default(false) @map("is_tips_enabled")
+  tipsAndGuidelines     String?  @map("tips_and_guidelines") @db.Text
+  
+  isRestrictionsEnabled Boolean  @default(false) @map("is_restrictions_enabled")
+  restrictions          String?  @db.Text
+  
+  isOffersEnabled       Boolean  @default(false) @map("is_offers_enabled")
+  offersAndDiscounts    String?  @map("offers_and_discounts") @db.Text
+  
+  isInstructionsEnabled Boolean  @default(false) @map("is_instructions_enabled")
+  specialInstructions   String?  @map("special_instructions") @db.Text
+
   // Aggregates
   rating      Float @default(0)
   reviewCount Int   @default(0) @map("review_count")
