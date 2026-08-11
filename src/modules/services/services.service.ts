@@ -9,13 +9,18 @@ export class ServicesService {
   constructor(private prisma: PrismaService) {}
 
   async create(merchantId: string, dto: CreateServiceDto) {
-    return this.prisma.service.create({
-      data: {
-        ...(dto as any),
-        merchantId,
-        slug: this.generateSlug(dto.name),
-      },
-    });
+    try {
+      return await this.prisma.service.create({
+        data: {
+          ...(dto as any),
+          merchantId,
+          slug: this.generateSlug(dto.name),
+        },
+      });
+    } catch (e: any) {
+      console.error('Prisma Create Error:', e);
+      throw new (require('@nestjs/common').InternalServerErrorException)(e.message || 'Error creating service');
+    }
   }
 
   async findAll(
@@ -162,6 +167,10 @@ export class ServicesService {
   }
 
   async update(id: string, dto: UpdateServiceDto) {
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(id)) {
+      throw new NotFoundException('Service not found (Invalid ID)');
+    }
     return this.prisma.service.update({
       where: { id },
       data: dto as any,
@@ -169,6 +178,10 @@ export class ServicesService {
   }
 
   async softDelete(id: string) {
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(id)) {
+      throw new NotFoundException('Service not found (Invalid ID)');
+    }
     return this.prisma.service.update({
       where: { id },
       data: { deletedAt: new Date(), isActive: false },

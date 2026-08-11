@@ -47,13 +47,13 @@ let HttpExceptionFilter = HttpExceptionFilter_1 = class HttpExceptionFilter {
         }
         else if (exception instanceof Error) {
             status = common_1.HttpStatus.INTERNAL_SERVER_ERROR;
-            message = 'Internal server error';
+            message = exception.message || 'Internal server error';
             code = 'INTERNAL_ERROR';
             this.logger.error(`Unhandled error: ${exception.message}`, exception.stack);
         }
         else {
             status = common_1.HttpStatus.INTERNAL_SERVER_ERROR;
-            message = 'Internal server error';
+            message = String(exception);
             code = 'UNKNOWN_ERROR';
         }
         response.status(status).json({
