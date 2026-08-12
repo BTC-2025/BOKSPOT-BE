@@ -96,6 +96,7 @@ export class ServicesService {
         { name: { contains: filters.search, mode: 'insensitive' } },
         { description: { contains: filters.search, mode: 'insensitive' } },
         { tags: { has: filters.search.toLowerCase() } },
+        { metadata: { path: ['merchantName'], string_contains: filters.search } }
       ];
     }
     if (filters?.minPrice || filters?.maxPrice) {

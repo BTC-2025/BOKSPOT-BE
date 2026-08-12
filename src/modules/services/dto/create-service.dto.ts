@@ -1,7 +1,8 @@
-import { IsString, IsNumber, IsOptional, IsEnum, IsArray, IsInt, Min, Max } from 'class-validator';
+import { IsString, IsNumber, IsOptional, IsEnum, IsArray, IsInt, Min, Max, IsObject } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreateServiceDto {
+  @ApiPropertyOptional() @IsOptional() @IsString() id?: string;
   @ApiProperty() @IsString() name!: string;
   @ApiProperty() @IsString() categoryId!: string;
   @ApiProperty() @IsString() description!: string;
@@ -14,6 +15,7 @@ export class CreateServiceDto {
   @ApiPropertyOptional({ default: 1 }) @IsOptional() @IsInt() @Min(1) @Max(1000) maxCapacity?: number;
   @ApiPropertyOptional() @IsOptional() @IsArray() @IsString({ each: true }) images?: string[];
   @ApiPropertyOptional() @IsOptional() @IsArray() @IsString({ each: true }) tags?: string[];
+  @ApiPropertyOptional() @IsOptional() @IsObject() metadata?: any;
 
   // Dynamic fields
   @ApiPropertyOptional() @IsOptional() isTimingEnabled?: boolean;
