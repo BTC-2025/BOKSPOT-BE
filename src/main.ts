@@ -33,7 +33,7 @@ async function bootstrap() {
 
   // CORS
   app.enableCors({
-    origin: corsOrigins.split(',').map((o) => o.trim()),
+    origin: true,
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
