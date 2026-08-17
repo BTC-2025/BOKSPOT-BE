@@ -19,11 +19,19 @@ let ServicesService = class ServicesService {
     }
     async create(merchantId, dto) {
         try {
+            let slug = this.generateSlug(dto.name);
+            // Ensure unique slug for this merchant
+            let existing = await this.prisma.service.findUnique({
+                where: { merchantId_slug: { merchantId, slug } }
+            });
+            if (existing) {
+                slug = `${slug}-${Math.random().toString(36).substring(2, 6)}`;
+            }
             return await this.prisma.service.create({
                 data: {
                     ...dto,
                     merchantId,
-                    slug: this.generateSlug(dto.name),
+                    slug,
                 },
             });
         }
