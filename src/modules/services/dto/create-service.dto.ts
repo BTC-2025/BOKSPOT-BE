@@ -17,7 +17,6 @@ export class CreateServiceDto {
   @ApiPropertyOptional() @IsOptional() @IsArray() @IsString({ each: true }) tags?: string[];
   @ApiPropertyOptional() @IsOptional() @IsObject() metadata?: any;
 
-  @ApiPropertyOptional() @IsOptional() @IsString() city?: string;
   @ApiPropertyOptional() @IsOptional() @IsNumber() latitude?: number;
   @ApiPropertyOptional() @IsOptional() @IsNumber() longitude?: number;
 

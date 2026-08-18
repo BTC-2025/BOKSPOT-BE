@@ -67,10 +67,7 @@ export class ServicesService {
     }
 
     if (filters?.city) {
-      where.OR = [
-        { city: { contains: filters.city, mode: 'insensitive' } },
-        { merchant: { city: { contains: filters.city, mode: 'insensitive' } } }
-      ];
+      where.merchant = { city: { contains: filters.city, mode: 'insensitive' } };
     }
 
     if (filters?.latitude !== undefined && filters?.longitude !== undefined) {

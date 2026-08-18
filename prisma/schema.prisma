@@ -162,7 +162,6 @@ model Service {
   slug                  String
   description           String
   shortDescription      String             @map("short_description") @db.VarChar(255)
-  city                  String?
   latitude              Float?
   longitude             Float?
   serviceType           ServiceType        @default(APPOINTMENT) @map("service_type")
