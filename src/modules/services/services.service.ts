@@ -67,9 +67,10 @@ export class ServicesService {
     }
 
     if (filters?.city) {
-      where.merchant = {
-        city: { contains: filters.city, mode: 'insensitive' },
-      };
+      where.OR = [
+        { city: { contains: filters.city, mode: 'insensitive' } },
+        { merchant: { city: { contains: filters.city, mode: 'insensitive' } } }
+      ];
     }
 
     if (filters?.latitude !== undefined && filters?.longitude !== undefined) {
@@ -77,7 +78,27 @@ export class ServicesService {
       const lat = filters.latitude;
       const lng = filters.longitude;
 
-      // Raw SQL query to find nearby merchant IDs using Haversine formula
+      // Raw SQL query to find nearby service IDs AND merchant IDs using Haversine formula
+      // First, find nearby services
+      const nearbyServices = await this.prisma.$queryRaw<Array<{ id: string }>>`
+        SELECT id FROM (
+          SELECT id, (
+            6371 * acos(
+              cos(radians(${lat})) *
+              cos(radians(latitude)) *
+              cos(radians(longitude) - radians(${lng})) +
+              sin(radians(${lat})) *
+              sin(radians(latitude))
+            )
+          ) AS distance_km
+          FROM services
+          WHERE is_active = true AND deleted_at IS NULL AND latitude IS NOT NULL AND longitude IS NOT NULL
+        ) sub
+        WHERE distance_km <= ${radiusKm}
+      `;
+      const serviceIds = nearbyServices.map((s: any) => s.id);
+
+      // Second, find nearby merchants (for fallback)
       const nearbyMerchants = await this.prisma.$queryRaw<Array<{ id: string }>>`
         SELECT id FROM (
           SELECT id, (
@@ -96,9 +117,13 @@ export class ServicesService {
       `;
       const merchantIds = nearbyMerchants.map((m: any) => m.id);
       
-      // If we found nearby merchants, filter by them, otherwise force empty result by passing dummy UUID or empty in list if Prisma allows,
-      // or we can use empty array if Prisma supports it (in Prisma, { in: [] } returns empty list correctly).
-      where.merchantId = { in: merchantIds };
+      // Combine conditions: either service is nearby OR merchant is nearby
+      const existingOR = where.OR || [];
+      where.OR = [
+        ...existingOR,
+        { id: { in: serviceIds.length > 0 ? serviceIds : ['00000000-0000-0000-0000-000000000000'] } },
+        { merchantId: { in: merchantIds.length > 0 ? merchantIds : ['00000000-0000-0000-0000-000000000000'] } }
+      ];
     }
 
     if (filters?.search) {
@@ -123,7 +148,13 @@ export class ServicesService {
         orderBy: { [pagination.sortBy || 'createdAt']: pagination.sortOrder || 'desc' },
         include: {
           merchant: {
-            select: { id: true, name: true, slug: true, logoUrl: true, city: true, rating: true, latitude: true, longitude: true },
+            select: { 
+              id: true, name: true, slug: true, logoUrl: true, city: true, rating: true, latitude: true, longitude: true,
+              services: {
+                select: { category: { select: { name: true } } },
+                where: { isActive: true, deletedAt: null }
+              }
+            },
           },
           category: true,
           _count: { select: { bookings: true, reviews: true } },
@@ -132,7 +163,22 @@ export class ServicesService {
       this.prisma.service.count({ where }),
     ]);
 
-    return createPaginatedResponse(data, total, pagination);
+    const enrichedData = data.map(service => {
+      const allCategories = (service.merchant as any).services?.map((s: any) => s.category?.name).filter(Boolean) || [];
+      const uniqueCategories = [...new Set(allCategories)];
+      
+      const { services, ...merchantWithoutServices } = service.merchant as any;
+      
+      return {
+        ...service,
+        merchant: {
+          ...merchantWithoutServices,
+          allCategories: uniqueCategories
+        }
+      };
+    });
+
+    return createPaginatedResponse(enrichedData, total, pagination);
   }
 
   async findById(id: string) {
