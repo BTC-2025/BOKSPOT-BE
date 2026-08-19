@@ -20,6 +20,33 @@ export class ServicesService {
         slug = `${slug}-${Math.random().toString(36).substring(2, 6)}`;
       }
 
+      // Check if merchant exists, if not, auto-create a mock merchant profile
+      // This allows infinite mock businesses from Business App without manual seeding
+      const merchantExists = await this.prisma.merchant.findUnique({ where: { id: merchantId } });
+      if (!merchantExists) {
+        const metadata = (dto.metadata as any) || {};
+        const merchantName = metadata.merchantName || 'Dynamic Merchant';
+        
+        await this.prisma.merchant.create({
+          data: {
+            id: merchantId,
+            ownerId: '00000000-0000-0000-0000-000000000000',
+            name: merchantName,
+            slug: this.generateSlug(merchantName) + '-' + Math.random().toString(36).substring(2, 6),
+            description: 'Auto-created merchant profile',
+            email: `merchant_${merchantId.substring(0, 8)}@bokspot.com`,
+            phone: '0000000000',
+            address: 'Auto Address',
+            city: 'Chennai',
+            state: 'TN',
+            postalCode: '000000',
+            latitude: (dto as any).latitude || 13.0827,
+            longitude: (dto as any).longitude || 80.2707,
+          }
+        });
+        console.log(`Auto-created missing merchant profile: ${merchantId}`);
+      }
+
       return await this.prisma.service.create({
         data: {
           ...(dto as any),
