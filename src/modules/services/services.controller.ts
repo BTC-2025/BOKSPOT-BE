@@ -23,7 +23,7 @@ export class ServicesController {
       const directUrl = process.env.DIRECT_URL || (dbUrl ? dbUrl.split('?')[0] : '');
       
       const { execSync } = require('child_process');
-      const output = execSync('npx prisma db push --accept-data-loss', { 
+      const output = execSync('./node_modules/.bin/prisma db push --accept-data-loss --skip-generate', { 
         encoding: 'utf-8',
         env: { ...process.env, DIRECT_URL: directUrl }
       });
