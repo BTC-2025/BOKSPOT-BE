@@ -99,7 +99,7 @@ export class ServicesService {
 
     if (filters?.latitude !== undefined && filters?.longitude !== undefined) {
       try {
-        const radiusKm = filters.radius || 25;
+        const radiusKm = filters.radius || 50;
         const lat = filters.latitude;
         const lng = filters.longitude;
 

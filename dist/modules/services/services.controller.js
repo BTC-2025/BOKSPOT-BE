@@ -27,17 +27,11 @@ let ServicesController = class ServicesController {
     async syncDb() {
         try {
             const dbUrl = process.env.DATABASE_URL || '';
-            const hostname = dbUrl.split('@')[1]?.split('/')[0] || 'unknown';
             const directUrl = process.env.DIRECT_URL || (dbUrl ? dbUrl.split('?')[0] : '');
-            const { execSync } = require('child_process');
-            const output = execSync('npx prisma db push --accept-data-loss', {
-                encoding: 'utf-8',
-                env: { ...process.env, DIRECT_URL: directUrl }
-            });
-            return { success: true, host: hostname, output };
+            return { success: true, dbUrl: dbUrl, directUrl: directUrl };
         }
         catch (error) {
-            return { success: false, error: error.message, stdout: error.stdout, stderr: error.stderr };
+            return { success: false, error: error.message };
         }
     }
     async create(merchantId, dto) {
