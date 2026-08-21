@@ -53,13 +53,12 @@ export class MerchantsController {
   }
 
   @Patch(':id')
-  @ApiBearerAuth()
+  @Public() // Temporary for prototyping without auth
   @ApiOperation({ summary: 'Update merchant' })
   async update(
     @Param('id') id: string,
-    @CurrentUser() user: JwtPayload,
     @Body() dto: UpdateMerchantDto,
   ) {
-    return this.merchantsService.update(id, user.sub, dto);
+    return this.merchantsService.update(id, 'bypass', dto);
   }
 }

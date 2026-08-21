@@ -261,6 +261,7 @@ model Booking {
   currency         String        @default("INR")
   attendeeCount    Int           @default(1) @map("attendee_count")
   notes            String?
+  bookingDetails   Json?         @map("booking_details")
   bookedAt         DateTime      @default(now()) @map("booked_at")
   scheduledStart   DateTime      @map("scheduled_start") @db.Timestamptz(6)
   scheduledEnd     DateTime      @map("scheduled_end") @db.Timestamptz(6)
@@ -403,6 +404,8 @@ enum ServiceType {
   CLASS
   EVENT
   VEHICLE_SERVICE
+  DINING
+  ACCOMMODATION
 }
 
 enum DayOfWeek {
