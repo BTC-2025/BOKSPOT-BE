@@ -24,6 +24,16 @@ let ServicesController = class ServicesController {
     constructor(servicesService) {
         this.servicesService = servicesService;
     }
+    async syncDb() {
+        try {
+            const { execSync } = require('child_process');
+            const output = execSync('npx prisma db push --accept-data-loss', { encoding: 'utf-8' });
+            return { success: true, output };
+        }
+        catch (error) {
+            return { success: false, error: error.message, stdout: error.stdout, stderr: error.stderr };
+        }
+    }
     async create(merchantId, dto) {
         return this.servicesService.create(merchantId, dto);
     }
@@ -47,6 +57,13 @@ let ServicesController = class ServicesController {
     }
 };
 exports.ServicesController = ServicesController;
+__decorate([
+    (0, common_1.Get)('sync-db'),
+    (0, public_decorator_1.Public)(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], ServicesController.prototype, "syncDb", null);
 __decorate([
     (0, common_1.Post)(':merchantId'),
     (0, public_decorator_1.Public)(),

@@ -14,6 +14,18 @@ import { Public } from '../../common/decorators/public.decorator';
 export class ServicesController {
   constructor(private servicesService: ServicesService) {}
 
+  @Get('sync-db')
+  @Public()
+  async syncDb() {
+    try {
+      const { execSync } = require('child_process');
+      const output = execSync('npx prisma db push --accept-data-loss', { encoding: 'utf-8' });
+      return { success: true, output };
+    } catch (error: any) {
+      return { success: false, error: error.message, stdout: error.stdout, stderr: error.stderr };
+    }
+  }
+
   @Post(':merchantId')
   @Public()
   @ApiBearerAuth()

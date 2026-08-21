@@ -18,14 +18,6 @@ import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 import { execSync } from 'child_process';
 
 async function bootstrap() {
-  try {
-    console.log('Running database schema sync...');
-    execSync('npx prisma db push --accept-data-loss', { stdio: 'inherit' });
-    console.log('Database schema synced successfully.');
-  } catch (error) {
-    console.error('Failed to sync database schema:', error);
-  }
-
   const app = await NestFactory.create(AppModule, {
     logger: ['error', 'warn', 'log', 'debug', 'verbose'],
   });
