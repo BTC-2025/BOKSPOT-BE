@@ -18,4 +18,5 @@ export class CreateMerchantDto {
   @ApiProperty() @IsNumber() longitude!: number;
   @ApiPropertyOptional({ default: 'Asia/Kolkata' }) @IsOptional() @IsString() timezone?: string;
   @ApiPropertyOptional({ default: 'INR' }) @IsOptional() @IsString() currency?: string;
+  @ApiPropertyOptional() @IsOptional() metadata?: any;
 }
