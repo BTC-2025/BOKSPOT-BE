@@ -18,9 +18,16 @@ export class ServicesController {
   @Public()
   async syncDb() {
     try {
+      const dbUrl = process.env.DATABASE_URL || '';
+      const hostname = dbUrl.split('@')[1]?.split('/')[0] || 'unknown';
+      const directUrl = process.env.DIRECT_URL || (dbUrl ? dbUrl.split('?')[0] : '');
+      
       const { execSync } = require('child_process');
-      const output = execSync('npx prisma db push --accept-data-loss', { encoding: 'utf-8' });
-      return { success: true, output };
+      const output = execSync('npx prisma db push --accept-data-loss', { 
+        encoding: 'utf-8',
+        env: { ...process.env, DIRECT_URL: directUrl }
+      });
+      return { success: true, host: hostname, output };
     } catch (error: any) {
       return { success: false, error: error.message, stdout: error.stdout, stderr: error.stderr };
     }
