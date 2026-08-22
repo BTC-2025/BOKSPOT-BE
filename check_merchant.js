@@ -6,17 +6,8 @@ const prisma = new PrismaClient({
     }
   }
 });
-
 async function main() {
-  const services = await prisma.service.findMany({});
-  console.log('Services:', services);
+  const m = await prisma.merchant.findUnique({ where: { id: '8fb83f4b-62aa-3a5b-3e42-074005378435' } });
+  console.log('Merchant:', m);
 }
-
-main()
-  .catch(e => {
-    console.error(e);
-    process.exit(1);
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });
+main().finally(() => prisma.$disconnect());

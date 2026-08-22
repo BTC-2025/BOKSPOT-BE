@@ -1,4 +1,4 @@
-import { IsString, IsNumber, IsOptional, IsUrl, IsEmail } from 'class-validator';
+import { IsString, IsNumber, IsOptional, IsUrl, IsEmail, IsArray } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreateMerchantDto {
@@ -6,6 +6,8 @@ export class CreateMerchantDto {
   @ApiPropertyOptional() @IsOptional() @IsString() description?: string;
   @ApiPropertyOptional() @IsOptional() @IsUrl() logoUrl?: string;
   @ApiPropertyOptional() @IsOptional() @IsUrl() coverImageUrl?: string;
+  @ApiPropertyOptional() @IsOptional() @IsArray() @IsString({ each: true }) images?: string[];
+  @ApiPropertyOptional() @IsOptional() @IsArray() @IsString({ each: true }) amenities?: string[];
   @ApiProperty() @IsEmail() email!: string;
   @ApiPropertyOptional() @IsOptional() @IsString() phone?: string;
   @ApiPropertyOptional() @IsOptional() @IsString() website?: string;

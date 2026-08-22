@@ -8,8 +8,8 @@ const prisma = new PrismaClient({
 });
 
 async function main() {
-  const services = await prisma.service.findMany({});
-  console.log('Services:', services);
+  const result = await prisma.service.deleteMany({});
+  console.log(`Deleted ${result.count} services.`);
 }
 
 main()
